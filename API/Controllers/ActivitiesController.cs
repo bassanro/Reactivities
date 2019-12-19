@@ -5,7 +5,6 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Application.Activities;
 using System;
-using System.Threading;
 
 namespace API.Controllers
 {
@@ -20,9 +19,9 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Activity>>> List(CancellationToken token)
+        public async Task<ActionResult<List<Activity>>> List()
         {
-            return await _mediator.Send(new ListH.Query(), token);
+            return await _mediator.Send(new ListH.Query());
         }
 
         [HttpGet("{id}")]
@@ -31,5 +30,23 @@ namespace API.Controllers
             return await _mediator.Send(new Details.Query { Id = id });
         }
 
+        [HttpPost]
+        public async Task<ActionResult<Unit>> Create(Create.Command command)
+        {
+            return await _mediator.Send(command);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<Unit>> Edit(Guid id, Edit.Command command)
+        {
+            command.Id = id;
+            return await _mediator.Send(command);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<Unit>> Delete(Guid id)
+        {
+            return await _mediator.Send(new Delete.Command { Id = id });
+        }
     }
 }
