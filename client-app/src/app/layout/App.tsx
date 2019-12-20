@@ -8,29 +8,30 @@ import { ActivityDashboard } from "../../features/activities/dashboard/ActivityD
 
 const App = () => {
   const [activities, setActivities] = useState<IActivity[]>([]);
-  const [selectedActivity, setSelectedActivity] = useState<IActivity | null>(
-    null
-  );
+  const [selectedActivity, setSelectedActivity] = useState<IActivity | null>(null);
   const [editMode, setEditMode] = useState(false);
+
+  const handleOpenCreateForm = () => {
+    setSelectedActivity(null);
+    setEditMode(true);
+  };
 
   const handleSelectActivity = (id: string) => {
     setSelectedActivity(activities.filter(a => a.id === id)[0]);
   };
 
   useEffect(() => {
-    axios
-      .get<IActivity[]>("http://localhost:5000/api/activities")
-      .then(response => {
-        //console.log(response);
-        setActivities(response.data);
-      });
+    axios.get<IActivity[]>("http://localhost:5000/api/activities").then(response => {
+      //console.log(response);
+      setActivities(response.data);
+    });
     return () => {};
     // Empty array would ensure useEffect runs one time only.
   }, []);
 
   return (
     <Fragment>
-      <NavBar />
+      <NavBar openCreateForm={handleOpenCreateForm} />
       <Container style={{ marginTop: "7em" }}>
         <ActivityDashboard
           activities={activities}
@@ -38,6 +39,7 @@ const App = () => {
           selectedActivity={selectedActivity}
           editMode={editMode}
           setEditMode={setEditMode}
+          setSelectedActivity={setSelectedActivity}
         />
       </Container>
     </Fragment>
