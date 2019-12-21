@@ -1,10 +1,10 @@
 import React, { useState, useEffect, Fragment } from "react";
-import axios from "axios";
 import { Container } from "semantic-ui-react";
 import { IActivity } from "../models/activity";
 import { NavBar } from "../../features/nav/NavBar";
 import "./styles.css";
 import { ActivityDashboard } from "../../features/activities/dashboard/ActivityDashboard";
+import agent from "../api/agent";
 
 const App = () => {
   const [activities, setActivities] = useState<IActivity[]>([]);
@@ -24,33 +24,41 @@ const App = () => {
   };
 
   const handlerCreateActivity = (activity: IActivity) => {
-    setActivities([...activities, activity]);
-    setSelectedActivity(activity);
-    setEditMode(false);
+    // If actitivty is not created the inside scope is not executed.
+    agent.activities.create(activity).then(() => {
+      setActivities([...activities, activity]);
+      setSelectedActivity(activity);
+      setEditMode(false);
+    });
   };
 
   const handleEditActivity = (activity: IActivity) => {
-    setActivities([...activities.filter(a => a.id !== activity.id), activity]);
-    setSelectedActivity(activity);
-    setEditMode(false);
+    agent.activities.update(activity).then(() => {
+      setActivities([
+        ...activities.filter(a => a.id !== activity.id),
+        activity
+      ]);
+      setSelectedActivity(activity);
+      setEditMode(false);
+    });
   };
 
   const handleDeleteActivity = (id: string) => {
-    setActivities([...activities.filter(a => a.id !== id)]);
+    agent.activities.delete(id).then(() => {
+      setActivities([...activities.filter(a => a.id !== id)]);
+    });
   };
 
   useEffect(() => {
-    axios
-      .get<IActivity[]>("http://localhost:5000/api/activities")
-      .then(response => {
-        //console.log(response);
-        let activities: IActivity[] = [];
-        response.data.forEach(activity => {
-          activity.date = activity.date.split(".")[0];
-          activities.push(activity);
-        });
-        setActivities(activities);
+    agent.activities.list().then(response => {
+      //console.log(response);
+      let activities: IActivity[] = [];
+      response.forEach(activity => {
+        activity.date = activity.date.split(".")[0];
+        activities.push(activity);
       });
+      setActivities(activities);
+    });
     return () => {};
     // Empty array would ensure useEffect runs one time only.
   }, []);
