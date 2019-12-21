@@ -5,6 +5,7 @@ import { NavBar } from "../../features/nav/NavBar";
 import "./styles.css";
 import { ActivityDashboard } from "../../features/activities/dashboard/ActivityDashboard";
 import agent from "../api/agent";
+import { LoadingComponent } from "./LoadingComponent";
 
 const App = () => {
   const [activities, setActivities] = useState<IActivity[]>([]);
@@ -12,6 +13,7 @@ const App = () => {
     null
   );
   const [editMode, setEditMode] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const handleOpenCreateForm = () => {
     setSelectedActivity(null);
@@ -50,18 +52,23 @@ const App = () => {
   };
 
   useEffect(() => {
-    agent.activities.list().then(response => {
-      //console.log(response);
-      let activities: IActivity[] = [];
-      response.forEach(activity => {
-        activity.date = activity.date.split(".")[0];
-        activities.push(activity);
-      });
-      setActivities(activities);
-    });
+    agent.activities
+      .list()
+      .then(response => {
+        //console.log(response);
+        let activities: IActivity[] = [];
+        response.forEach(activity => {
+          activity.date = activity.date.split(".")[0];
+          activities.push(activity);
+        });
+        setActivities(activities);
+      })
+      .then(() => setLoading(false));
     return () => {};
     // Empty array would ensure useEffect runs one time only.
   }, []);
+
+  if (loading) return <LoadingComponent content="Loading Activities .. " />;
 
   return (
     <Fragment>
