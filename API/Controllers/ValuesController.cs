@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
+// This has access to DB and used to fetch data using context.
 namespace DatingApp.API.Controllers
 {
     [Route("api/values")]
@@ -32,6 +33,13 @@ namespace DatingApp.API.Controllers
         public async Task<ActionResult<string>> Get(int id)
         {
             var value = await _context.Values.FindAsync(id);
+
+            if (value == null)
+            {
+                // This will return 404 notFound.
+                return NotFound();
+            }
+
             return Ok(value);
         }
 
