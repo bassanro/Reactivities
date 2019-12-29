@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { Grid, List } from "semantic-ui-react";
 import ActivityList from "./ActivityList";
 import ActivityDetails from "../details/ActivityDetails";
-import { ActivityForm } from "../form/ActivityForm";
+import ActivityForm from "../form/ActivityForm";
 import ActivityStore from "../../../app/stores/activityStore";
 import { observer } from "mobx-react-lite";
 
