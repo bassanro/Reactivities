@@ -1,12 +1,12 @@
-import React, { useState, FormEvent } from "react";
+import React, { useState, FormEvent, useContext } from "react";
 import { Segment, Form, Button } from "semantic-ui-react";
 import { IActivity } from "../../../app/models/activity";
 import { v4 as uuid } from "uuid";
+import ActivityStore from "../../../app/stores/activityStore";
 
 interface IProps {
   setEditMode: (ediMode: boolean) => void;
   selectedActivity: IActivity;
-  createActivity: (activiy: IActivity) => void;
   editActivity: (activity: IActivity) => void;
   submitting: boolean;
 }
@@ -14,10 +14,12 @@ interface IProps {
 export const ActivityForm: React.FC<IProps> = ({
   setEditMode,
   selectedActivity,
-  createActivity,
   editActivity,
   submitting
 }) => {
+  const activityStore = useContext(ActivityStore);
+  const { createActivity } = activityStore;
+
   const initlializeForm = () => {
     if (selectedActivity) {
       return selectedActivity;
@@ -47,9 +49,7 @@ export const ActivityForm: React.FC<IProps> = ({
       editActivity(activity);
     }
   };
-  const handleInputChange = (
-    event: FormEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const handleInputChange = (event: FormEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = event.currentTarget;
     setActivity({ ...activity, [name]: value });
   };
@@ -95,19 +95,8 @@ export const ActivityForm: React.FC<IProps> = ({
           name="venue"
           onChange={handleInputChange}
         />
-        <Button
-          loading={submitting}
-          floated="right"
-          positive
-          type="submit"
-          content="Submit"
-        />
-        <Button
-          onClick={() => setEditMode(false)}
-          floated="right"
-          type="button"
-          content="Cancel"
-        />
+        <Button loading={submitting} floated="right" positive type="submit" content="Submit" />
+        <Button onClick={() => setEditMode(false)} floated="right" type="button" content="Cancel" />
       </Form>
     </Segment>
   );

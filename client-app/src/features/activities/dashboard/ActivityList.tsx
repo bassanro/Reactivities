@@ -1,6 +1,5 @@
 import React, { SyntheticEvent, useContext } from "react";
 import { Item, Button, Label, Segment } from "semantic-ui-react";
-import { IActivity } from "../../../app/models/activity";
 import { observer } from "mobx-react-lite";
 import ActivityStore from "../../../app/stores/activityStore";
 
@@ -12,11 +11,11 @@ interface IProps {
 
 const ActivityList: React.FC<IProps> = ({ deleteActivity, submitting, target }) => {
   const activityStore = useContext(ActivityStore);
-  const { activities, selectActivity } = activityStore;
+  const { activtiesByDate, selectActivity } = activityStore;
   return (
     <Segment clearing>
       <Item.Group divided>
-        {activities.map(activity => (
+        {activtiesByDate.map(activity => (
           <Item key={activity.id}>
             <Item.Content>
               <Item.Header as="a">{activity.title}</Item.Header>

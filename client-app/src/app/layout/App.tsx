@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Fragment, SyntheticEvent, useContext } from "react";
 import { Container } from "semantic-ui-react";
 import { IActivity } from "../models/activity";
-import { NavBar } from "../../features/nav/NavBar";
+import NavBar from "../../features/nav/NavBar";
 import "./styles.css";
 import ActivityDashboard from "../../features/activities/dashboard/ActivityDashboard";
 import agent from "../api/agent";
@@ -16,29 +16,6 @@ const App = () => {
   const [editMode, setEditMode] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [target, setTarget] = useState("");
-
-  const handleOpenCreateForm = () => {
-    setSelectedActivity(null);
-    setEditMode(true);
-  };
-
-  const handleSelectActivity = (id: string) => {
-    setSelectedActivity(activities.filter(a => a.id === id)[0]);
-    setEditMode(false);
-  };
-
-  const handlerCreateActivity = (activity: IActivity) => {
-    setSubmitting(true);
-    // If actitivty is not created the inside scope is not executed.
-    agent.activities
-      .create(activity)
-      .then(() => {
-        setActivities([...activities, activity]);
-        setSelectedActivity(activity);
-        setEditMode(false);
-      })
-      .then(() => setSubmitting(false));
-  };
 
   const handleEditActivity = (activity: IActivity) => {
     setSubmitting(true);
@@ -72,14 +49,12 @@ const App = () => {
 
   return (
     <Fragment>
-      <NavBar openCreateForm={handleOpenCreateForm} />
+      <NavBar />
       <Container style={{ marginTop: "7em" }}>
         <ActivityDashboard
           activities={activityStore.activities}
-          selectActivity={handleSelectActivity}
           setEditMode={setEditMode}
           setSelectedActivity={setSelectedActivity}
-          createActivity={handlerCreateActivity}
           editActivity={handleEditActivity}
           deleteActivity={handleDeleteActivity}
           submitting={submitting}
