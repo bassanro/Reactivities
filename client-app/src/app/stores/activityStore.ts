@@ -10,7 +10,7 @@ class ActivityStore {
   @observable activityRegistry = new Map();
   @observable activities: IActivity[] = [];
   @observable loadingInital = false;
-  @observable selectedActivity: IActivity | undefined;
+  @observable activity: IActivity | undefined;
   @observable editMode = false;
   @observable submitting = false;
   @observable target = "";
@@ -64,7 +64,7 @@ class ActivityStore {
       await agent.activities.update(activity);
       runInAction("editing an activity", () => {
         this.activityRegistry.set(activity.id, activity);
-        this.selectedActivity = activity;
+        this.activity = activity;
         this.editMode = false;
         this.submitting = false;
       });
@@ -96,23 +96,48 @@ class ActivityStore {
     }
   };
 
+  getActivity = (id: string) => {
+    return this.activityRegistry.get(id);
+  };
+
+  @action loadActivity = async (id: string) => {
+    let activity = this.getActivity(id);
+    if (activity) {
+      this.activity = activity;
+    } else {
+      this.loadingInital = true;
+      try {
+        activity = await agent.activities.details(id);
+        runInAction("Getting Activity", () => {
+          this.activity = activity;
+          this.loadingInital = false;
+        });
+      } catch (error) {
+        runInAction("get Activity error", () => {
+          this.loadingInital = false;
+        });
+        console.log(error);
+      }
+    }
+  };
+
   // Open activity form
   @action openCreateForm = () => {
     this.editMode = true;
-    this.selectedActivity = undefined;
+    this.activity = undefined;
   };
 
   @action openEditForm = (id: string) => {
-    this.selectedActivity = this.activityRegistry.get(id);
+    this.activity = this.activityRegistry.get(id);
     this.editMode = true;
   };
 
   @action cancelSelectedActivity = () => {
-    this.selectedActivity = undefined;
+    this.activity = undefined;
   };
 
   @action selectActivity = (id: string) => {
-    this.selectedActivity = this.activityRegistry.get(id);
+    this.activity = this.activityRegistry.get(id);
     this.editMode = false;
   };
 
