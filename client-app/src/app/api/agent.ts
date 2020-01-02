@@ -6,8 +6,16 @@ axios.defaults.baseURL = "http://localhost:5000/api";
 
 // (onFulfilled, onRejected)
 axios.interceptors.response.use(undefined, (error) => {
+  const { status, data, config } = error.response;
   // Page not found.
-  if (error.response.status === 404) {
+  if (status === 404) {
+    history.push("/notFound");
+  }
+  if (
+    status === 400 &&
+    config.method === "get" &&
+    data.errors.hasOwnProperty("id")
+  ) {
     history.push("/notFound");
   }
 });
