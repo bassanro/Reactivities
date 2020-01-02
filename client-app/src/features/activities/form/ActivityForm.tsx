@@ -73,13 +73,6 @@ const ActivityForm: React.FC<RouteComponentProps<DetailsParams>> = ({
     console.log(values);
   };
 
-  const handleInputChange = (
-    event: FormEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = event.currentTarget;
-    setActivity({ ...activity, [name]: value });
-  };
-
   return (
     <Grid>
       <Grid.Column width={10}>
@@ -94,37 +87,36 @@ const ActivityForm: React.FC<RouteComponentProps<DetailsParams>> = ({
                   value={activity.title}
                   component={TextInput}
                 />
-                <Form.TextArea
-                  rows={2}
+                <Field
                   placeholder="Description"
                   value={activity.description}
                   name="description"
-                  onChange={handleInputChange}
+                  component={TextInput}
                 />
-                <Form.Input
+                <Field
                   placeholder="Category"
                   value={activity.category}
                   name="category"
-                  onChange={handleInputChange}
+                  component={TextInput}
                 />
-                <Form.Input
+                <Field
                   type="datetime-local"
                   placeholder="Date"
                   value={activity.date}
                   name="date"
-                  onChange={handleInputChange}
+                  component={TextInput}
                 />
-                <Form.Input
+                <Field
                   placeholder="City"
                   value={activity.city}
                   name="city"
-                  onChange={handleInputChange}
+                  component={TextInput}
                 />
-                <Form.Input
+                <Field
                   placeholder="Venue"
                   value={activity.venue}
                   name="venue"
-                  onChange={handleInputChange}
+                  component={TextInput}
                 />
                 <Button
                   loading={submitting}
