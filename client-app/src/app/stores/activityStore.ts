@@ -14,15 +14,21 @@ class ActivityStore {
   @observable target = "";
 
   @computed get activtiesByDate() {
-    return this.groupActivitiesByDate(Array.from(this.activityRegistry.values()));
+    return this.groupActivitiesByDate(
+      Array.from(this.activityRegistry.values())
+    );
   }
 
   groupActivitiesByDate(activities: IActivity[]) {
-    const sortedActivities = activities.sort((a, b) => Date.parse(a.date) - Date.parse(b.date));
+    const sortedActivities = activities.sort(
+      (a, b) => Date.parse(a.date) - Date.parse(b.date)
+    );
     return Object.entries(
       sortedActivities.reduce((activities, activity) => {
         const date = activity.date.split("T")[0];
-        activities[date] = activities[date] ? [...activities[date], activity] : [activity];
+        activities[date] = activities[date]
+          ? [...activities[date], activity]
+          : [activity];
         return activities;
       }, {} as { [key: string]: IActivity[] })
     );
@@ -33,7 +39,7 @@ class ActivityStore {
     try {
       const activities = await agent.activities.list();
       runInAction("loading activities", () => {
-        activities.forEach(activity => {
+        activities.forEach((activity) => {
           activity.date = activity.date.split(".")[0];
           this.activityRegistry.set(activity.id, activity);
         });
@@ -81,7 +87,10 @@ class ActivityStore {
     }
   };
 
-  @action deleteActivity = async (event: SyntheticEvent<HTMLButtonElement>, id: string) => {
+  @action deleteActivity = async (
+    event: SyntheticEvent<HTMLButtonElement>,
+    id: string
+  ) => {
     this.submitting = true;
     this.target = event.currentTarget.name;
 
@@ -125,7 +134,7 @@ class ActivityStore {
         runInAction("get Activity error", () => {
           this.loadingInital = false;
         });
-        throw error;
+        console.log(error);
       }
     }
   };
