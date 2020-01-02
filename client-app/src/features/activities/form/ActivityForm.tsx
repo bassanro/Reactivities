@@ -7,6 +7,9 @@ import { observer } from "mobx-react-lite";
 import { RouteComponentProps } from "react-router-dom";
 import { Form as FinalForm, Field } from "react-final-form";
 import { TextInput } from "../../../app/common/form/TextInput";
+import { TextAreaInput } from "../../../app/common/form/TextAreaInput";
+import { SelectInput } from "../../../app/common/form/SelectInput";
+import { category } from "../../../app/common/options/categoryOptions";
 
 interface DetailsParams {
   id: string;
@@ -91,13 +94,15 @@ const ActivityForm: React.FC<RouteComponentProps<DetailsParams>> = ({
                   placeholder="Description"
                   value={activity.description}
                   name="description"
-                  component={TextInput}
+                  rows={3}
+                  component={TextAreaInput}
                 />
                 <Field
                   placeholder="Category"
+                  options={category}
                   value={activity.category}
                   name="category"
-                  component={TextInput}
+                  component={SelectInput}
                 />
                 <Field
                   type="datetime-local"
