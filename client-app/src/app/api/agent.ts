@@ -1,6 +1,7 @@
 import { IActivity } from "./../models/activity";
 import axios, { AxiosResponse } from "axios";
 import { history } from "../..";
+import { toast } from "react-toastify";
 
 axios.defaults.baseURL = "http://localhost:5000/api";
 
@@ -18,6 +19,9 @@ axios.interceptors.response.use(undefined, (error) => {
   ) {
     history.push("/notFound");
   }
+
+  if (status === 500)
+    toast.error("Server error - Check Terminal for more info!");
 });
 
 const responseBody = (response: AxiosResponse) => response.data;
