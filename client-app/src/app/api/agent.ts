@@ -3,10 +3,18 @@ import axios, { AxiosResponse } from "axios";
 
 axios.defaults.baseURL = "http://localhost:5000/api";
 
+// (onFulfilled, onRejected)
+axios.interceptors.response.use(undefined, (error) => {
+  // Page not found.
+  if (error.response.status === 404) {
+    throw error.response; // Catch handler is in activityStore LoadActivity.
+  }
+});
+
 const responseBody = (response: AxiosResponse) => response.data;
 
 const sleep = (ms: number) => (response: AxiosResponse) =>
-  new Promise<AxiosResponse>(resolve =>
+  new Promise<AxiosResponse>((resolve) =>
     setTimeout(() => resolve(response), ms)
   );
 
@@ -14,22 +22,22 @@ const requests = {
   get: (url: string) =>
     axios
       .get(url)
-      .then(sleep(1000))
+      .then(sleep(600))
       .then(responseBody),
   post: (url: string, body: {}) =>
     axios
       .post(url, body)
-      .then(sleep(1000))
+      .then(sleep(600))
       .then(responseBody),
   put: (url: string, body: {}) =>
     axios
       .put(url, body)
-      .then(sleep(1000))
+      .then(sleep(600))
       .then(responseBody),
   delete: (url: string) =>
     axios
       .delete(url)
-      .then(sleep(1000))
+      .then(sleep(600))
       .then(responseBody)
 };
 
