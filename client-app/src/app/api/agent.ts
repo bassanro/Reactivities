@@ -1,12 +1,12 @@
 import { IActivity } from "./../models/activity";
 import axios, { AxiosResponse } from "axios";
-import { history } from "../..";
+import { history } from "../.."; //index.tsx need not be named.
 import { toast } from "react-toastify";
 
 axios.defaults.baseURL = "http://localhost:5000/api";
 
 // (onFulfilled, onRejected)
-axios.interceptors.response.use(undefined, (error) => {
+axios.interceptors.response.use(undefined, error => {
   if (error.message === "Network Error" && !error.response) {
     toast.error("Nework Error - Make sure the API is running");
   }
@@ -23,14 +23,16 @@ axios.interceptors.response.use(undefined, (error) => {
     history.push("/notFound");
   }
 
-  if (status === 500)
+  if (status === 500) {
     toast.error("Server error - Check Terminal for more info!");
+  }
+  throw error;
 });
 
 const responseBody = (response: AxiosResponse) => response.data;
 
 const sleep = (ms: number) => (response: AxiosResponse) =>
-  new Promise<AxiosResponse>((resolve) =>
+  new Promise<AxiosResponse>(resolve =>
     setTimeout(() => resolve(response), ms)
   );
 

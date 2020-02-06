@@ -1,6 +1,6 @@
 bin
 obj
+Course-Assets
 .vscode
 .DS_Store
-appsettings.json
 *.db
